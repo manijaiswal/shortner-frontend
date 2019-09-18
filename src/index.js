@@ -1,8 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
 import './index.css';
-import App from './App';
+// import App from './App';
+import RootContainer from './containers/RootContainer';
+import configStore from './store/configureStore';
 import * as serviceWorker from './serviceWorker';
+
+class App extends React.Component{
+    render(){
+        return(
+            <Provider store={configStore()}>
+                <RootContainer />
+            </Provider>
+        )
+    }
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
