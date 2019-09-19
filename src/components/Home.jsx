@@ -31,7 +31,7 @@ class Home extends Component {
             return;
         }
         this.setState({ loading: true });
-        var data = { originalUrl: this.state.url, baseUrl: 'localhost:3001' };
+        var data = { originalUrl: this.state.url, baseUrl: 'shrtnerapp.herokuapp.com' };
         this.props.postData(data, CREATE_URL).then((res) => {
             console.log(res);
             var data = res.data

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
-  PieChart, Pie, Sector, Cell,
+  PieChart, Pie, Sector, Cell,Legend,Tooltip
 } from 'recharts';
 
-const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-  { name: 'Group C', value: 300 },
-  { name: 'Group D', value: 200 },
-];
+// const data = [
+//   { name: 'Group A', value: 400 },
+//   { name: 'Group B', value: 300 },
+//   { name: 'Group C', value: 300 },
+//   { name: 'Group D', value: 200 },
+// ];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -29,13 +29,21 @@ const renderCustomizedLabel = ({
 
 export default class PieCharts extends Component {
   render() {
+    var x = this.props.datas;
+    var data = [];
+    for(var i=0;i<x.length;i++){
+        data.push({"name":x[i]['_id'].data,"value":x[i].count});
+    }
+    console.log(data)
     return (
       <PieChart width={400} height={400}>
+        <Tooltip />
+        <Legend />
         <Pie
           data={data}
           cx={200}
           cy={200}
-          labelLine={false}
+          labelLine={true}
           label={renderCustomizedLabel}
           outerRadius={80}
           fill="#8884d8"

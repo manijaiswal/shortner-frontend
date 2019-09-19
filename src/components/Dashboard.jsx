@@ -1,37 +1,14 @@
 import React, { Component } from 'react';
-import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,ResponsiveContainer
-} from 'recharts';
 import DatePicker from "react-datepicker";
 import Tables from './Tables';
+import Tables2 from './Tables2';
 import PieCharts from './PieCharts';
-import "react-datepicker/dist/react-datepicker.css";
+
 import queryString from 'query-string';
 import {FTECH_DATA} from '../constants/apiConstants';
-
-const data = [
-    {
-      name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
-    },
-    {
-      name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
-    },
-    {
-      name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
-    },
-    {
-      name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
-    },
-    {
-      name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
-    },
-    {
-      name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
-    },
-    {
-      name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
-    },
-];
+import swal from 'sweetalert';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LineCharts from './LineChart'
 
 
 export default class DashBoard extends Component {
@@ -40,109 +17,101 @@ export default class DashBoard extends Component {
         this.state = {
             startDate: new Date(),
             endDate: new Date(),
+            tableData:[],
+            totalView:0,
+            originalUrl:'',
+            shortUrl:"",
+            browser:[],
+            operSys:[],
+            countByDate:[],
+            country:[],
+            loaded:false
         }
-        this.state.startDate.setDate(this.state.startDate.getDate() - 7);
-        this.startDateChange = this.startDateChange.bind(this);
-        this.endDateChange = this.endDateChange.bind(this);
     }
-    startDateChange(date) {
-        this.setState({
-            startDate: date
-        })
-    }
-    endDateChange(date) {
-        this.setState({
-            endDate: date
-        })
-    }
-
     componentDidMount(){
         var data = queryString.parse(this.props.location.search);
-        console.log(data);
         var qd = {code:data.code.trim()};
-        console.log(qd);
         this.props.fetchFunction(qd,FTECH_DATA).then((res)=>{
             console.log(res);
+            var ld = res.data;
+            this.setState({loaded:true});
+            if(Object.keys(ld).length != 0){
+                if("table" in ld){
+                    var x = ld['table'];
+                    this.setState({totalView:x.views,originalUrl:x.originalUrl,shortUrl:x.shortUrl,tableData:x.tableData});
+                }
+                if("countByDate" in ld){
+                    var count= ld['countByDate'];
+                    this.setState({countByDate:count});
+                }
+                if("browser" in ld){
+                    this.setState({browser:ld.browser});
+                }
+                if("country" in ld){
+                    this.setState({country:ld.country});
+                }
+                if("oper_sys" in ld){
+                    this.setState({operSys:ld.oper_sys});
+                }
+            }
+
         }).catch((error)=>{
             console.log(error.response);
+            swal("opps!",error.response.message,"error");
+            return;
         })
     }
     render() {
+        if(!this.state.loaded){
+            return (
+                <div>
+                    <CircularProgress  />
+                </div>    
+            )
+        }
         return (
             <div className="dashboard">
                 <div className="row">
                     <div className="col-6 col-md-4 text-center">
                         <div className="info mx-4">
                             <p>Total Views</p>
-                            <h1>3</h1>
+                            <h1>{this.state.totalView}</h1>
                         </div>
                         <button className="but orange">Views</button>
                     </div>
                     <div className="col-6 col-md-4 text-center">
                         <div className="info mx-4">
-                            <p>Total browser</p>
-                            <h1>3</h1>
+                            <p>Original Url</p>
+                            <p>{this.state.originalUrl}</p>
                         </div>
-                        <button className="but blue">Browser</button>
+                        <button className="but blue">Original</button>
                     </div>
                     <div className="col-12 col-md-4 text-center mt-5 mt-md-0">
                         <div className="info mx-4">
-                            <p>Total ip</p>
-                            <h1>7,6</h1>
+                            <p>Short Url</p>
+                            <p>{this.state.shortUrl}</p>
                         </div>
-                        <button className="but blue">Ip Address</button>
+                        <button className="but blue">Short Url</button>
                     </div>
                 </div>
                 <br /><br />
-                <div className="row">
-                    <div className="col-md-8 offset-md-2">
-                        <Tables />
-                    </div>
+                <div className="container-fluid mt-5 mt-md-0">
+                    <h3 className="heading ml-5">No of views per Date</h3>
+                    <br />	<br />
+                    <Tables datas = {this.state.countByDate} />
                 </div>
+                <br /><br />
+                 <br /><br />
+                <div className="container-fluid mt-5 mt-md-0">
+                    <h3 className="heading ml-5">Views Deatils</h3>
+                    <br />	<br />
+                    <Tables2 datas = {this.state.tableData} />
+                </div>
+                <br /><br />
                 <div className="container-fluid mt-5 mt-md-0">
                     <h3 className="heading ml-5">Views Graph</h3>
                     <br />	<br />
-                    <center>
-                        <ResponsiveContainer width="80%">
-                            <LineChart
-                                width={500}
-                                height={300}
-                                data={data}
-                                margin={{
-                                    top: 5, right: 30, left: 20, bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </center>
-                    <br />
-                    <div className="d-flex flex-row justify-content-center">
-                        <div className="info">
-                            <p>Start Date</p>
-                            <DatePicker
-                                selected={this.state.startDate}
-                                onChange={this.startDateChange}
-                                name="startDate"
-                                className="text-center w-100"
-                            />
-                        </div>
-                        <div className="info">
-                            <p>End Date</p>
-                            <DatePicker
-                                selected={this.state.endDate}
-                                onChange={this.endDateChange}
-                                name="endDate"
-                                className="text-center w-100"
-                            />
-                        </div>
-                    </div>
+                    <LineCharts datas = {this.state.countByDate}/>
                 </div>
                 <br /><br />
 
@@ -150,11 +119,15 @@ export default class DashBoard extends Component {
                     <h3 className="heading ml-5">Views pi chart Graph</h3>
                     <br />	<br />
                     <div className="row">
-                        {[1,2,3].map((e)=>(
-                            <div className="col-md-4">
-                                <PieCharts />
-                            </div>
-                        ))}
+                        <div className="col-md-4" >
+                            <PieCharts datas ={this.state.browser} />
+                        </div>
+                        <div className="col-md-4" >
+                            <PieCharts datas ={this.state.operSys} />
+                        </div>
+                        <div className="col-md-4">
+                            <PieCharts datas ={this.state.country} />
+                        </div>
                     </div>
                 </div>        
             </div>
