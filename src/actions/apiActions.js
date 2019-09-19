@@ -2,18 +2,17 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const postData= (userData,url) => async dispatch=>{
-    var cookieData = Cookies.getJSON('COOKIE_AUTH');
-    var token = '';
-    if(Object.keys(cookieData).length!=0){
-        token = cookieData['token'];
-    }
+    // var cookieData = Cookies.getJSON('COOKIE_AUTH');
+    // var token = '';
+    // if(Object.keys(cookieData).length!=0){
+    //     token = cookieData['token'];
+    // }
     const reqOptions = {
         method:'POST',
         url:url,
         data:JSON.stringify(userData),
         headers:{
-            'Content-Type': 'application/json',
-            'x-access-token': token
+            'Content-Type': 'application/json'
         }
     };
     return axios(reqOptions)
