@@ -55,6 +55,7 @@ class Home extends Component {
     render() {
         console.log(this.props);
         return (
+            <div><marquee>Please add + sign in genreated url to see dashboard</marquee>
             <div className="w-100 form-singin-wrapper d-flex align-items-center justify-content-center">
                 <div className="info">
                     <div className="corner">
@@ -108,6 +109,7 @@ class Home extends Component {
                         </div>)}
                     </div>
                 </div>
+            </div>
             </div>
         );
     }

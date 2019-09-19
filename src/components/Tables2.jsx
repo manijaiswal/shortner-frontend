@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import moment from 'moment'
 
 export default class Tables2 extends Component{
     render(){
@@ -25,7 +26,7 @@ export default class Tables2 extends Component{
                 {rows.map(row => (
                   <TableRow key={row._id}>
                     <TableCell component="th" scope="row">
-                      {row.createdAt}
+                      {moment(row.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                     </TableCell>
                     <TableCell align="right">{row.code}</TableCell>
                     <TableCell align="right">{row.browser}</TableCell>
