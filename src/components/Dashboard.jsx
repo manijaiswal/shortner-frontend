@@ -3,7 +3,11 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,ResponsiveContainer
 } from 'recharts';
 import DatePicker from "react-datepicker";
+import Tables from './Tables';
+import PieCharts from './PieCharts';
 import "react-datepicker/dist/react-datepicker.css";
+import queryString from 'query-string';
+import {FTECH_DATA} from '../constants/apiConstants';
 
 const data = [
     {
@@ -30,18 +34,6 @@ const data = [
 ];
 
 
-function dateDiff(date2, date1) {
-    const diffTime = Math.abs(date2.getTime() - date1.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-function genData(days) {
-    //generating fake data for charts
-    var data = [];
-    for (var i = 0; i < days; i++)
-        data.push({ 'name': `Date ${i + 1}`, clients: Math.floor(Math.random() * 4000) });
-    return data;
-}
-
 export default class DashBoard extends Component {
     constructor(props) {
         super(props);
@@ -61,6 +53,18 @@ export default class DashBoard extends Component {
     endDateChange(date) {
         this.setState({
             endDate: date
+        })
+    }
+
+    componentDidMount(){
+        var data = queryString.parse(this.props.location.search);
+        console.log(data);
+        var qd = {code:data.code.trim()};
+        console.log(qd);
+        this.props.fetchFunction(qd,FTECH_DATA).then((res)=>{
+            console.log(res);
+        }).catch((error)=>{
+            console.log(error.response);
         })
     }
     render() {
@@ -90,6 +94,11 @@ export default class DashBoard extends Component {
                     </div>
                 </div>
                 <br /><br />
+                <div className="row">
+                    <div className="col-md-8 offset-md-2">
+                        <Tables />
+                    </div>
+                </div>
                 <div className="container-fluid mt-5 mt-md-0">
                     <h3 className="heading ml-5">Views Graph</h3>
                     <br />	<br />
@@ -136,6 +145,18 @@ export default class DashBoard extends Component {
                     </div>
                 </div>
                 <br /><br />
+
+                <div className="container-fluid mt-5 mt-md-0">
+                    <h3 className="heading ml-5">Views pi chart Graph</h3>
+                    <br />	<br />
+                    <div className="row">
+                        {[1,2,3].map((e)=>(
+                            <div className="col-md-4">
+                                <PieCharts />
+                            </div>
+                        ))}
+                    </div>
+                </div>        
             </div>
         )
     }

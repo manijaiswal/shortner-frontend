@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Root from "../components/Root";
-import {postData} from '../actions/apiActions';
+import {postData,fetchFunction} from '../actions/apiActions';
 
 const RootContainer = props=><Root {...props} />;
 const mapStateToProps = (state) =>{
@@ -11,5 +11,6 @@ const mapStateToProps = (state) =>{
 }
 
 export default connect(mapStateToProps,{
-   postData 
+   postData,
+   fetchFunction 
 })(RootContainer);
