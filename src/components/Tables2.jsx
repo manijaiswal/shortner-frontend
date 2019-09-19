@@ -19,7 +19,7 @@ export default class Tables2 extends Component{
                   <TableCell align="right">Code</TableCell>
                   <TableCell align="right">Browser</TableCell>
                   <TableCell align="right">OS</TableCell>
-                  <TableCell align="right">IP</TableCell>
+                  <TableCell align="right">Country</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -31,7 +31,7 @@ export default class Tables2 extends Component{
                     <TableCell align="right">{row.code}</TableCell>
                     <TableCell align="right">{row.browser}</TableCell>
                     <TableCell align="right">{row.os}</TableCell>
-                    <TableCell align="right">{row.ip}</TableCell>
+                    <TableCell align="right">{row.country}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
